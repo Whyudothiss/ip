@@ -1,9 +1,9 @@
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.ArrayList;
 
 public class GiChat {
-    private static ArrayList<String> tasks = new ArrayList<>();
+    // Change to an array list of Task for level 3
+    private static ArrayList<Task> tasks = new ArrayList<>();
     public static void main(String[] args) {
         String border = "______________________________________________";
         System.out.println(border);
@@ -28,7 +28,8 @@ public class GiChat {
     }
 
     // Used arraylist to track the task list so that it can be called at listTask()
-    private static void addTask(String task, String barrier) {
+    private static void addTask(String taskDescription, String barrier) {
+        Task task = new Task(taskDescription);
         tasks.add(task);
         System.out.println(barrier);
         System.out.println("added: " + task);

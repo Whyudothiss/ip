@@ -109,28 +109,32 @@ public class GiChat {
     private static void markTask(String taskNumber, String barrier, boolean markDone) {
         System.out.println(barrier);
         // Need to convert the taskNumber to an integer then minus 1 to follow array list
-        int taskIndex = Integer.parseInt(taskNumber) - 1;
+        try {
+            int taskIndex = Integer.parseInt(taskNumber) - 1;
 
-        if (taskIndex >= 0 && taskIndex < tasks.size()) {
-            Task task = tasks.get(taskIndex);
+            if (taskIndex >= 0 && taskIndex < tasks.size()) {
+                Task task = tasks.get(taskIndex);
 
-            if (markDone) { // If user wants to mark task as done
-                task.markAsDone();
-                System.out.println("OKAY LA, being productive I see.");
-                System.out.println("I have helped marked it for you.");
-                System.out.println(task);
+                if (markDone) { // If user wants to mark task as done
+                    task.markAsDone();
+                    System.out.println("OKAY LA, being productive I see.");
+                    System.out.println("I have helped marked it for you.");
+                    System.out.println(task);
+
+                } else {
+                    task.uncheck();
+                    System.out.println("oh... I have unchecked the task you lazy bum!");
+                    System.out.println(task);
+                }
 
             } else {
-                task.uncheck();
-                System.out.println("oh... I have unchecked the task you lazy bum!");
-                System.out.println(task);
+                System.out.println("Alamak this task number does not exist!");
             }
 
-        } else {
-            System.out.println("Alamak this task number does not exist!");
+            System.out.println(barrier);
+        } catch (NumberFormatException e) {
+            System.out.println("Need to enter a valid task number leh");
         }
-
-        System.out.println(barrier);
     }
 
     private static void addTodo(String description, String barrier) {

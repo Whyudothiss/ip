@@ -15,11 +15,35 @@ public class GiChat {
 
         // Scans the next line of input and check if the user says "bye"
         while (!(line = scanner.nextLine()).equals("bye")) {
-            // Check if the user types out "List" if so call listTask else call addTask
-            if (line.equals("list")) {
-                listTasks(border);
-            } else {
-                addTask(line, border);
+            // split input into 2, one is command so either mark/unmark/list
+            String[] parts = line.split(" ", 2);
+            String command = parts[0];
+
+            switch (command) {
+                case "list":
+                    listTasks(border);
+                    break;
+                case "mark":
+                    if (parts.length > 1) {
+                        markTask(parts[1], border, true);
+                    } else {
+                        System.out.println(border);
+                        System.out.println("Woi you want me to mark which number, can say? E.g mark 1");
+                        System.out.println(border);
+                    }
+                    break;
+                case "unmark":
+                    if (parts.length > 1) {
+                        markTask(parts[1], border, false);
+                    } else {
+                        System.out.println(border);
+                        System.out.println("wlao which one do you want to mark off, can say anot? E.g unmark 3");
+                        System.out.println(border);
+                    }
+                    break;
+                default:
+                    addTask(line, border);
+                    break;
             }
         }
         System.out.println(border);
@@ -32,7 +56,7 @@ public class GiChat {
         Task task = new Task(taskDescription);
         tasks.add(task);
         System.out.println(barrier);
-        System.out.println("added: " + task);
+        System.out.println("added: " + taskDescription);
         System.out.println(barrier);
     }
     // First check if array is empty, if not run through array then print out the tasks
@@ -48,5 +72,8 @@ public class GiChat {
             System.out.println(barrier);
         }
     }
+
+    private static void markTask(String taskNumber, String barrier, boolean markDone) {}
+
 
 }

@@ -5,9 +5,9 @@ public class GiChat {
     // Change to an array list of Task for level 3
     private static ArrayList<Task> tasks = new ArrayList<>();
     public static void main(String[] args) {
-        String border = "______________________________________________";
+        String border = "________________________________________________";
         System.out.println(border);
-        System.out.println("Hello I'm your GiChat \nWhat can I do for you");
+        System.out.println("Hello I'm GiChat \nWhat you want");
         System.out.println(border);
 
         Scanner scanner = new Scanner(System.in);
@@ -42,8 +42,38 @@ public class GiChat {
                         System.out.println(border);
                     }
                     break;
+                case "todo":
+                    if (parts.length > 1) {
+                        addTodo(parts[1], border);
+                    } else {
+                        System.out.println(border);
+                        System.out.println("Eh can you give a valid todo task");
+                        System.out.println(border);
+                    }
+                    break;
+                case "deadline":
+                    if (parts.length > 1) {
+                        addDeadline(parts[1], border);
+                    } else {
+                        System.out.println(border);
+                        System.out.println("Eh can you give a valid deadline task");
+                        System.out.println(border);
+                    }
+                    break;
+                case "event":
+                    if (parts.length > 1) {
+                        addEvent(parts[1], border);
+                    } else {
+                        System.out.println(border);
+                        System.out.println("Eh can you give a valid Event task");
+                        System.out.println(border);
+                    }
+                    break;
                 default:
-                    addTask(line, border);
+                    System.out.println(border);
+                    System.out.println("Erm... you need to give me a valid command...");
+                    System.out.println("Can list, mark, unmark, todo, deadline, event");
+                    System.out.println(border);
                     break;
             }
         }
@@ -53,18 +83,20 @@ public class GiChat {
     }
 
     // Used arraylist to track the task list so that it can be called at listTask()
-    private static void addTask(String taskDescription, String barrier) {
+    /* Don't actually need this method anymore after level-4 since a task is one of
+    *  the 3 subclasses of task*/
+    /*private static void addTask(String taskDescription, String barrier) {
         Task task = new Task(taskDescription);
         tasks.add(task);
         System.out.println(barrier);
         System.out.println("added: " + taskDescription);
         System.out.println(barrier);
-    }
+    }*/
     // First check if array is empty, if not run through array then print out the tasks
     private static void listTasks(String barrier) {
         System.out.println(barrier);
         if (tasks.isEmpty()) {
-            System.out.println("No tasks in your list :)");
+            System.out.println("Wah so free ah you, got no tasks to do");
             System.out.println(barrier);
         } else {
             for (int i = 0; i < tasks.size(); i++) {
@@ -100,6 +132,58 @@ public class GiChat {
 
         System.out.println(barrier);
     }
+
+    private static void addTodo(String description, String barrier) {
+        ToDo newTodo = new ToDo(description);
+        tasks.add(newTodo);
+        System.out.println(barrier);
+        System.out.println("Roger, added the task");
+        System.out.println("   " + newTodo);
+        System.out.println("Jialat, you have " + tasks.size() + " tasks in your list");
+        System.out.println(barrier);
+    }
+
+    private static void addDeadline(String input, String barrier) {
+        String[] parts = input.split("/by");
+        if (parts.length < 2) {
+            System.out.println(barrier);
+            System.out.println("Hey specify the deadline with /by");
+            System.out.println(barrier);
+        } else {
+            Deadline newDeadline = new Deadline(parts[0], parts[1]);
+            tasks.add(newDeadline);
+            System.out.println(barrier);
+            System.out.println("Roger, added the task");
+            System.out.println("   " + newDeadline);
+            System.out.println("Jialat, you have " + tasks.size() + " tasks in your list");
+            System.out.println(barrier);
+        }
+    }
+
+    private static void addEvent(String input, String barrier) {
+        String[] parts = input.split("/from");
+        if (parts.length < 2) {
+            System.out.println(barrier);
+            System.out.println("Hey specify the Event with /from and /to");
+            System.out.println(barrier);
+            return;
+        }
+        String[] timeline = parts[1].split("/to");
+        if (timeline.length < 2) {
+            System.out.println(barrier);
+            System.out.println("Hey specify the Event with /from and /to");
+            System.out.println(barrier);
+        } else {
+            Event newEvent = new Event(parts[0], timeline[0], timeline[1]);
+            tasks.add(newEvent);
+            System.out.println(barrier);
+            System.out.println("Roger, added the task");
+            System.out.println("   " + newEvent);
+            System.out.println("Jialat, you have " + tasks.size() + " tasks in your list");
+            System.out.println(barrier);
+        }
+    }
+
 
 
 }

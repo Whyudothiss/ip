@@ -69,6 +69,15 @@ public class GiChat {
                         System.out.println(border);
                     }
                     break;
+                case "delete":
+                    if (parts.length > 1) {
+                        deleteTask(parts[1], border);
+                    } else {
+                        System.out.println(border);
+                        System.out.println("You need to give me a task number");
+                        System.out.println(border);
+                    }
+                    break;
                 default:
                     System.out.println(border);
                     System.out.println("Erm... you need to give me a valid command...");
@@ -195,6 +204,27 @@ public class GiChat {
         }
     }
 
+    private static void deleteTask(String taskNumber, String barrier) {
+        try {
+            int taskIndex = Integer.parseInt(taskNumber) - 1;
 
+            if (taskIndex < 0 || taskIndex >= tasks.size()) {
+                System.out.println(barrier);
+                System.out.println("The task number does not exist...");
+                System.out.println(barrier);
+                return;
+            }
 
+            Task taskToDelete = tasks.get(taskIndex);
+            tasks.remove(taskToDelete);
+
+            System.out.println(barrier);
+            System.out.println("Orh, I removed the task");
+            System.out.println(taskToDelete);
+            System.out.println("Now you are left with " + tasks.size() + " tasks in your list");
+            System.out.println(barrier);
+        } catch (NumberFormatException e) {
+            System.out.println("Hais you need to enter a task number, not some gibberish");
+        }
+    }
 }

@@ -84,7 +84,8 @@ public class GiChat {
 
             if (markDone) { // If user wants to mark task as done
                 task.markAsDone();
-                System.out.println("OKAY LA, being productive I see.\nI have helped marked it for you");
+                System.out.println("OKAY LA, being productive I see.");
+                System.out.println("I have helped marked it for you.");
                 System.out.println(task);
 
             } else {

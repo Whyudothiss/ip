@@ -19,6 +19,7 @@ public class GiChat {
             String[] parts = line.split(" ", 2);
             String command = parts[0];
 
+            // check which command user inputs so the bot knows how to handle it
             switch (command) {
                 case "list":
                     listTasks(border);
@@ -73,7 +74,31 @@ public class GiChat {
         }
     }
 
-    private static void markTask(String taskNumber, String barrier, boolean markDone) {}
+    private static void markTask(String taskNumber, String barrier, boolean markDone) {
+        System.out.println(barrier);
+        // Need to convert the taskNumber to an integer then minus 1 to follow array list
+        int taskIndex = Integer.parseInt(taskNumber) - 1;
+
+        if (taskIndex >= 0 && taskIndex < tasks.size()) {
+            Task task = tasks.get(taskIndex);
+
+            if (markDone) { // If user wants to mark task as done
+                task.markAsDone();
+                System.out.println("OKAY LA, being productive I see.\nI have helped marked it for you");
+                System.out.println(task);
+
+            } else {
+                task.uncheck();
+                System.out.println("oh... I have unchecked the task you lazy bum!");
+                System.out.println(task);
+            }
+
+        } else {
+            System.out.println("Alamak this task number does not exist!");
+        }
+
+        System.out.println(barrier);
+    }
 
 
 }

@@ -116,15 +116,22 @@ public class GiChat {
                 Task task = tasks.get(taskIndex);
 
                 if (markDone) { // If user wants to mark task as done
-                    task.markAsDone();
-                    System.out.println("OKAY LA, being productive I see.");
-                    System.out.println("I have helped marked it for you.");
-                    System.out.println(task);
-
-                } else {
-                    task.uncheck();
-                    System.out.println("oh... I have unchecked the task you lazy bum!");
-                    System.out.println(task);
+                    if (!task.getStatus()) {
+                        task.markAsDone();
+                        System.out.println("OKAY LA, being productive I see.");
+                        System.out.println("I helped marked it for you.");
+                        System.out.println(task);
+                    } else {
+                        System.out.println("eh you already finished this task la");
+                    }
+                } else { // If user wants to unmark
+                    if (task.getStatus()) {
+                        task.uncheck();
+                        System.out.println("oh... I have unchecked the task you lazy bum!");
+                        System.out.println(task);
+                    } else {
+                        System.out.println("eh this task is already unmark, choose again");
+                    }
                 }
 
             } else {

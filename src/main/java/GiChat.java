@@ -279,6 +279,22 @@ public class GiChat {
     }
 
     public static String taskToString(Task task) {
-        
+        String type;
+        String details = "";
+        if (task instanceof ToDo) {
+            type = "T";
+        } else if (task instanceof Deadline) {
+            type = "D";
+            Deadline deadline = (Deadline) task;
+            details = " | " + deadline.getBy();
+        } else if (task instanceof  Event) {
+            type = "E";
+            Event event = (Event) task;
+            details = " | " + event.getFrom() + " | " + event.getTo();
+        } else {
+            type = "T"; // just fall back to todo
+        }
+
+        return type + " | " + task.getStatusIcon() + " | " + task.getDescription() + details;
     }
 }

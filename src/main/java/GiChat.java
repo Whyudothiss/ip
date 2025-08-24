@@ -1,14 +1,24 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class GiChat {
     // Change to an array list of Task for level 3
     private static ArrayList<Task> tasks = new ArrayList<>();
+    private static final String DATA_FILE = "tasks.txt";
     public static void main(String[] args) {
         String border = "________________________________________________";
         System.out.println(border);
         System.out.println("Hello I'm GiChat \nWhat you want");
         System.out.println(border);
+
+        // need to load the tasks that are saved locally in the computer
+        // then add it into the array tasks
+        loadTasks();
 
         Scanner scanner = new Scanner(System.in);
         String line;
@@ -86,6 +96,8 @@ public class GiChat {
                     break;
             }
         }
+        saveTasks();
+
         System.out.println(border);
         System.out.println("Bye. Hope to see you again!");
         System.out.println(border);
@@ -226,5 +238,47 @@ public class GiChat {
         } catch (NumberFormatException e) {
             System.out.println("Hais you need to enter a task number, not some gibberish");
         }
+    }
+
+
+    private static void loadTasks() {
+        try {
+            File file = new File(DATA_FILE);
+            if (!file.exists()) {
+                return; // no file to load from
+            }
+
+            Scanner fileScanner = new Scanner(file);
+            // Adds task that were saved into local file into the tasks array to be listed
+            while(fileScanner.hasNextLine()) {
+                String nextLine = fileScanner.nextLine();
+                Task task = getTaskFromString(nextLine);
+                if (task != null) {
+                    tasks.add(task);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error loading tasks: " + e.getMessage());
+        }
+    }
+    // convert the line from text file into a task object
+    private static Task getTaskFromString(String line) {}
+
+    private static void saveTasks() {
+        try {
+            FileWriter writer = new FileWriter(DATA_FILE);
+
+            for (Task task : tasks) {
+                writer.write(taskToString(task) + "\n");
+            }
+
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error loading tasks: " + e.getMessage());
+        }
+    }
+
+    public static String taskToString(Task task) {
+        
     }
 }

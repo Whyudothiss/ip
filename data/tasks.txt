@@ -1,0 +1,3 @@
+T | X | buy chicken
+D |   | sleep  |  fri 2pm
+E | X | gym  |  8pm  |  10pm

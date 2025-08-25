@@ -1,14 +1,22 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileWriter;
 
 public class GiChat {
     // Change to an array list of Task for level 3
     private static ArrayList<Task> tasks = new ArrayList<>();
+    private static final String DATA_FILE = "data/tasks.txt";
     public static void main(String[] args) {
         String border = "________________________________________________";
         System.out.println(border);
         System.out.println("Hello I'm GiChat \nWhat you want");
         System.out.println(border);
+
+        // need to load the tasks that are saved locally in the computer
+        // then add it into the array tasks
+        loadTasks();
 
         Scanner scanner = new Scanner(System.in);
         String line;
@@ -21,71 +29,73 @@ public class GiChat {
 
             // check which command user inputs so the bot knows how to handle it
             switch (command) {
-                case "list":
-                    listTasks(border);
-                    break;
-                case "mark":
-                    if (parts.length > 1) {
-                        markTask(parts[1], border, true);
-                    } else {
-                        System.out.println(border);
-                        System.out.println("Woi you want me to mark which number, can say? E.g mark 1");
-                        System.out.println(border);
-                    }
-                    break;
-                case "unmark":
-                    if (parts.length > 1) {
-                        markTask(parts[1], border, false);
-                    } else {
-                        System.out.println(border);
-                        System.out.println("wlao which one do you want to mark off, can say anot? E.g unmark 3");
-                        System.out.println(border);
-                    }
-                    break;
-                case "todo":
-                    if (parts.length > 1) {
-                        addTodo(parts[1], border);
-                    } else {
-                        System.out.println(border);
-                        System.out.println("Eh can you give a valid todo task");
-                        System.out.println(border);
-                    }
-                    break;
-                case "deadline":
-                    if (parts.length > 1) {
-                        addDeadline(parts[1], border);
-                    } else {
-                        System.out.println(border);
-                        System.out.println("Eh can you give a valid deadline task");
-                        System.out.println(border);
-                    }
-                    break;
-                case "event":
-                    if (parts.length > 1) {
-                        addEvent(parts[1], border);
-                    } else {
-                        System.out.println(border);
-                        System.out.println("Eh can you give a valid Event task");
-                        System.out.println(border);
-                    }
-                    break;
-                case "delete":
-                    if (parts.length > 1) {
-                        deleteTask(parts[1], border);
-                    } else {
-                        System.out.println(border);
-                        System.out.println("You need to give me a task number");
-                        System.out.println(border);
-                    }
-                    break;
-                default:
+            case "list":
+                listTasks(border);
+                break;
+            case "mark":
+                if (parts.length > 1) {
+                    markTask(parts[1], border, true);
+                } else {
                     System.out.println(border);
-                    System.out.println("Erm... you need to give me a valid command...");
-                    System.out.println("Can list, mark, unmark, todo, deadline, event");
+                    System.out.println("Woi you want me to mark which number, can say? E.g mark 1");
                     System.out.println(border);
-                    break;
+                }
+                break;
+            case "unmark":
+                if (parts.length > 1) {
+                    markTask(parts[1], border, false);
+                } else {
+                    System.out.println(border);
+                    System.out.println("wlao which one do you want to mark off, can say anot? E.g unmark 3");
+                    System.out.println(border);
+                }
+                break;
+            case "todo":
+                if (parts.length > 1) {
+                    addTodo(parts[1], border);
+                } else {
+                    System.out.println(border);
+                    System.out.println("Eh can you give a valid todo task");
+                    System.out.println(border);
+                }
+                break;
+            case "deadline":
+                if (parts.length > 1) {
+                    addDeadline(parts[1], border);
+                } else {
+                    System.out.println(border);
+                    System.out.println("Eh can you give a valid deadline task");
+                    System.out.println(border);
+                }
+                break;
+            case "event":
+                if (parts.length > 1) {
+                    addEvent(parts[1], border);
+                } else {
+                    System.out.println(border);
+                    System.out.println("Eh can you give a valid Event task");
+                    System.out.println(border);
+                }
+                break;
+            case "delete":
+                if (parts.length > 1) {
+                    deleteTask(parts[1], border);
+                } else {
+                    System.out.println(border);
+                    System.out.println("You need to give me a task number");
+                    System.out.println(border);
+                }
+                break;
+            default:
+                System.out.println(border);
+                System.out.println("Erm... you need to give me a valid command...");
+                System.out.println("Can list, mark, unmark, todo, deadline, event");
+                System.out.println(border);
+                break;
             }
         }
+        saveTasks();
+
         System.out.println(border);
         System.out.println("Bye. Hope to see you again!");
         System.out.println(border);
@@ -130,6 +140,7 @@ public class GiChat {
                         System.out.println("OKAY LA, being productive I see.");
                         System.out.println("I helped marked it for you.");
                         System.out.println(task);
+                        saveTasks();
                     } else {
                         System.out.println("eh you already finished this task la");
                     }
@@ -138,6 +149,7 @@ public class GiChat {
                         task.uncheck();
                         System.out.println("oh... I have unchecked the task you lazy bum!");
                         System.out.println(task);
+                        saveTasks();
                     } else {
                         System.out.println("eh this task is already unmark, choose again");
                     }
@@ -156,6 +168,7 @@ public class GiChat {
     private static void addTodo(String description, String barrier) {
         ToDo newTodo = new ToDo(description);
         tasks.add(newTodo);
+        saveTasks();
         System.out.println(barrier);
         System.out.println("Roger, added the task");
         System.out.println("   " + newTodo);
@@ -172,6 +185,7 @@ public class GiChat {
         } else {
             Deadline newDeadline = new Deadline(parts[0], parts[1]);
             tasks.add(newDeadline);
+            saveTasks();
             System.out.println(barrier);
             System.out.println("Roger, added the task");
             System.out.println("   " + newDeadline);
@@ -196,6 +210,7 @@ public class GiChat {
         } else {
             Event newEvent = new Event(parts[0], timeline[0], timeline[1]);
             tasks.add(newEvent);
+            saveTasks();
             System.out.println(barrier);
             System.out.println("Roger, added the task");
             System.out.println("   " + newEvent);
@@ -226,5 +241,93 @@ public class GiChat {
         } catch (NumberFormatException e) {
             System.out.println("Hais you need to enter a task number, not some gibberish");
         }
+    }
+
+
+    private static void loadTasks() {
+        try {
+            File file = new File(DATA_FILE);
+            if (!file.exists()) {
+                return; // no file to load from
+            }
+
+            Scanner fileScanner = new Scanner(file);
+            // Adds task that were saved into local file into the tasks array to be listed
+            while(fileScanner.hasNextLine()) {
+                String nextLine = fileScanner.nextLine();
+                Task task = getTaskFromString(nextLine);
+                if (task != null) {
+                    tasks.add(task);
+                }
+            }
+            fileScanner.close();
+        } catch (IOException e) {
+            System.out.println("Error loading tasks: " + e.getMessage());
+        }
+    }
+    // convert the line from text file into a task object
+    private static Task getTaskFromString(String line) {
+        // to use | need to have a \ but to have that need another \
+        String[] parts = line.split(" \\| ");
+        if (parts.length < 3) {
+            return null;
+        }
+        String type = parts[0];
+        boolean isDone = parts[1].equals("X");
+        String description = parts[2];
+
+        Task task = null;
+
+        switch (type) {
+        case "T":
+            task = new ToDo(description);
+            break;
+
+        case "D":
+            task = new Deadline(description, parts[3]);
+            break;
+        case "E":
+            task = new Event(description, parts[3], parts[4]);
+            break;
+        }
+        if (task != null && isDone) {
+            task.markAsDone();
+        }
+
+        return task;
+    }
+
+    private static void saveTasks() {
+        try {
+            FileWriter writer = new FileWriter(DATA_FILE);
+
+            for (Task task : tasks) {
+                writer.write(taskToString(task) + "\n");
+            }
+
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error saving tasks: " + e.getMessage());
+        }
+    }
+
+    public static String taskToString(Task task) {
+        String type;
+        String details = "";
+        if (task instanceof ToDo) {
+            type = "T";
+        } else if (task instanceof Deadline) {
+            type = "D";
+            Deadline deadline = (Deadline) task;
+            details = " | " + deadline.getBy();
+        } else if (task instanceof  Event) {
+            type = "E";
+            Event event = (Event) task;
+            details = " | " + event.getFrom() + " | " + event.getTo();
+        } else {
+            type = "T"; // just fall back to todo
+        }
+
+        return type + " | " + task.getStatusIcon() + " | " + task.getDescription() + details;
     }
 }

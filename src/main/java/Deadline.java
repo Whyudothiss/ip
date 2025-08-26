@@ -36,9 +36,31 @@ public class Deadline extends Task {
         return this.originalBy;
     }
 
+    public LocalDate getByDate() {
+        return this.byDate;
+    }
+
+    public LocalDateTime getByDateTime() {
+        return this.byDateTime;
+    }
+
     @Override
     public String toString() {
-        return "[D][" + this.getStatusIcon() +  "] " + this.description + "(by:" + this.originalBy + ")";
+        String dateString;
+        if (this.byDateTime != null) {
+            // Format as MMM dd yyyy, h:mm a
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mm a");
+            dateString = byDateTime.format(formatter);
+        } else if (this.byDate != null) {
+            // Format as MMM dd yyyy
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy");
+            dateString = byDate.format(formatter);
+        } else {
+            // just fall back to string
+            dateString = originalBy;
+            System.out.println("Is a String");
+        }
+        return "[D][" + this.getStatusIcon() +  "] " + this.description + " (by: " + dateString + ")";
     }
 
 }

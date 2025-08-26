@@ -183,7 +183,9 @@ public class GiChat {
             System.out.println("Hey specify the deadline with /by");
             System.out.println(barrier);
         } else {
-            Deadline newDeadline = new Deadline(parts[0], parts[1]);
+            String description = parts[0].trim();
+            String by = parts[1].trim();
+            Deadline newDeadline = new Deadline(description, by);
             tasks.add(newDeadline);
             saveTasks();
             System.out.println(barrier);

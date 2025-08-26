@@ -183,7 +183,11 @@ public class GiChat {
             System.out.println("Hey specify the deadline with /by");
             System.out.println(barrier);
         } else {
-            Deadline newDeadline = new Deadline(parts[0], parts[1]);
+            // had to add the trim function to these two parts
+            // as there was an issue with parsing cause of the white space
+            String description = parts[0].trim();
+            String by = parts[1].trim();
+            Deadline newDeadline = new Deadline(description, by);
             tasks.add(newDeadline);
             saveTasks();
             System.out.println(barrier);
@@ -208,7 +212,11 @@ public class GiChat {
             System.out.println("Hey specify the Event with /from and /to");
             System.out.println(barrier);
         } else {
-            Event newEvent = new Event(parts[0], timeline[0], timeline[1]);
+            // trim these variables as well to account for the white space from somewhere
+            String description = parts[0].trim();
+            String from = timeline[0].trim();
+            String to = timeline[1].trim();
+            Event newEvent = new Event(description, from, to);
             tasks.add(newEvent);
             saveTasks();
             System.out.println(barrier);

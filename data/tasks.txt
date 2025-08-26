@@ -1,3 +1,6 @@
-T | X | buy chicken
-D |   | sleep  |  fri 2pm
-E | X | gym  |  8pm  |  10pm
+D |   | sleep | 2025-10-10
+D |   | test | 2022-02-01
+T |   | sleep
+D |   | return book | 2019-10-15 1800
+E |   | overseas trip | 2019-10-02 | 2019-10-14
+E | X | project meeting | 2019-10-15 1400 | 2019-10-15 1600

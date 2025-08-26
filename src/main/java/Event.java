@@ -18,7 +18,7 @@ public class Event extends Task{
         parseFromDateTime(this.originalFrom);
         parseToDateTime(this.originalTo);
     }
-    
+
     private void parseFromDateTime(String dateTimeString) {
         try {
             this.fromDateTime = LocalDateTime.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));

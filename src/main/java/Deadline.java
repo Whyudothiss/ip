@@ -49,7 +49,7 @@ public class Deadline extends Task {
         String dateString;
         if (this.byDateTime != null) {
             // Format as MMM dd yyyy, h:mm a
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mm a");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma");
             dateString = byDateTime.format(formatter);
         } else if (this.byDate != null) {
             // Format as MMM dd yyyy
@@ -58,7 +58,6 @@ public class Deadline extends Task {
         } else {
             // just fall back to string
             dateString = originalBy;
-            System.out.println("Is a String");
         }
         return "[D][" + this.getStatusIcon() +  "] " + this.description + " (by: " + dateString + ")";
     }

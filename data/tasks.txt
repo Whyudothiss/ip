@@ -1,6 +1,4 @@
-D |   | sleep | 2025-10-10
-D |   | test | 2022-02-01
-T |   | sleep
-D |   | return book | 2019-10-15 1800
-E |   | overseas trip | 2019-10-02 | 2019-10-14
-E | X | project meeting | 2019-10-15 1400 | 2019-10-15 1600
+T | X | sleep
+D |   | sleep | today
+D |   | sleep | 2025-12-12
+E |   | rest | 2025-10-10 | 2025-10-12

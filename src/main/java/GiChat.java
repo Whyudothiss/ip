@@ -1,341 +1,157 @@
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.io.File;
-import java.io.FileWriter;
-
 public class GiChat {
-    // Change to an array list of Task for level 3
-    private static ArrayList<Task> tasks = new ArrayList<>();
-    private static final String DATA_FILE = "data/tasks.txt";
+    private Storage storage;
+    private TaskList tasks;
+    private Ui ui;
+
+    public GiChat(String filePath) {
+        this.ui = new Ui();
+        this.storage = new Storage(filePath);
+        try {
+            this.tasks = new TaskList(storage.load());
+        } catch (Exception e) {
+            ui.showError("Error loading tasks: " + e.getMessage());
+            tasks = new TaskList();
+        }
+    }
+
     public static void main(String[] args) {
-        String border = "________________________________________________";
-        System.out.println(border);
-        System.out.println("Hello I'm GiChat \nWhat you want");
-        System.out.println(border);
-
-        // need to load the tasks that are saved locally in the computer
-        // then add it into the array tasks
-        loadTasks();
-
-        Scanner scanner = new Scanner(System.in);
-        String line;
-
-        // Scans the next line of input and check if the user says "bye"
-        while (!(line = scanner.nextLine()).equals("bye")) {
-            // split input into 2, one is command so either mark/unmark/list
-            String[] parts = line.split(" ", 2);
-            String command = parts[0];
-
-            // check which command user inputs so the bot knows how to handle it
-            switch (command) {
-            case "list":
-                listTasks(border);
-                break;
-            case "mark":
-                if (parts.length > 1) {
-                    markTask(parts[1], border, true);
-                } else {
-                    System.out.println(border);
-                    System.out.println("Woi you want me to mark which number, can say? E.g mark 1");
-                    System.out.println(border);
-                }
-                break;
-            case "unmark":
-                if (parts.length > 1) {
-                    markTask(parts[1], border, false);
-                } else {
-                    System.out.println(border);
-                    System.out.println("wlao which one do you want to mark off, can say anot? E.g unmark 3");
-                    System.out.println(border);
-                }
-                break;
-            case "todo":
-                if (parts.length > 1) {
-                    addTodo(parts[1], border);
-                } else {
-                    System.out.println(border);
-                    System.out.println("Eh can you give a valid todo task");
-                    System.out.println(border);
-                }
-                break;
-            case "deadline":
-                if (parts.length > 1) {
-                    addDeadline(parts[1], border);
-                } else {
-                    System.out.println(border);
-                    System.out.println("Eh can you give a valid deadline task");
-                    System.out.println(border);
-                }
-                break;
-            case "event":
-                if (parts.length > 1) {
-                    addEvent(parts[1], border);
-                } else {
-                    System.out.println(border);
-                    System.out.println("Eh can you give a valid Event task");
-                    System.out.println(border);
-                }
-                break;
-            case "delete":
-                if (parts.length > 1) {
-                    deleteTask(parts[1], border);
-                } else {
-                    System.out.println(border);
-                    System.out.println("You need to give me a task number");
-                    System.out.println(border);
-                }
-                break;
-            default:
-                System.out.println(border);
-                System.out.println("Erm... you need to give me a valid command...");
-                System.out.println("Can list, mark, unmark, todo, deadline, event");
-                System.out.println(border);
-                break;
-            }
-        }
-        saveTasks();
-
-        System.out.println(border);
-        System.out.println("Bye. Hope to see you again!");
-        System.out.println(border);
+        new GiChat("data/tasks.txt").run();
     }
 
-    // Used arraylist to track the task list so that it can be called at listTask()
-    /* Don't actually need this method anymore after level-4 since a task is one of
-    *  the 3 subclasses of task*/
-    /*private static void addTask(String taskDescription, String barrier) {
-        Task task = new Task(taskDescription);
-        tasks.add(task);
-        System.out.println(barrier);
-        System.out.println("added: " + taskDescription);
-        System.out.println(barrier);
-    }*/
-    // First check if array is empty, if not run through array then print out the tasks
-    private static void listTasks(String barrier) {
-        System.out.println(barrier);
-        if (tasks.isEmpty()) {
-            System.out.println("Wah so free ah you, got no tasks to do");
-            System.out.println(barrier);
-        } else {
-            for (int i = 0; i < tasks.size(); i++) {
-                System.out.println((i + 1) + ". " + tasks.get(i));
+    public void run() {
+        ui.showWelcome();
+        boolean isExit = false;
+
+        while (!isExit) {
+            try {
+                String fullcomand = ui.readCommand();
+                Command command = Parser.parse(fullcomand);
+                executeCommand(command);
+                isExit = command.isExit();
+            } catch (Exception e) {
+                ui.showError("Error: " + e.getMessage());
             }
-            System.out.println(barrier);
         }
     }
 
-    private static void markTask(String taskNumber, String barrier, boolean markDone) {
-        System.out.println(barrier);
-        // Need to convert the taskNumber to an integer then minus 1 to follow array list
+    public void executeCommand(Command command) {
+        switch (command.getType()) {
+        case BYE:
+            storage.save(tasks.getAllTasks());
+            ui.showGoodbye();
+            break;
+        case LIST:
+            ui.showTasksList(tasks);
+            break;
+        case MARK:
+            handleMarkTask(command.getArguments(), true);
+            break;
+        case UNMARK:
+            handleMarkTask(command.getArguments(), false);
+            break;
+        case TODO:
+            handleAddTodo(command.getArguments());
+            break;
+        case DEADLINE:
+            handleAddDeadline(command.getArguments());
+            break;
+        case EVENT:
+            handleAddEvent(command.getArguments());
+            break;
+        case DELETE:
+            handleDeleteTask(command.getArguments());
+            break;
+        case UNKNOWN:
+            ui.showError("Erm... you need to give me a valid command...\n" +
+                    "Can list, mark, unmark, todo, deadline, event, delete");
+            break;
+        }
+    }
+
+    private void handleMarkTask(String arguments, boolean markDone) {
         try {
-            int taskIndex = Integer.parseInt(taskNumber) - 1;
+            int taskIndex = Parser.parseTaskNumber(arguments);
 
-            if (taskIndex >= 0 && taskIndex < tasks.size()) {
-                Task task = tasks.get(taskIndex);
-
-                if (markDone) { // If user wants to mark task as done
-                    if (!task.getStatus()) {
-                        task.markAsDone();
-                        System.out.println("OKAY LA, being productive I see.");
-                        System.out.println("I helped marked it for you.");
-                        System.out.println(task);
-                        saveTasks();
-                    } else {
-                        System.out.println("eh you already finished this task la");
-                    }
-                } else { // If user wants to unmark
-                    if (task.getStatus()) {
-                        task.uncheck();
-                        System.out.println("oh... I have unchecked the task you lazy bum!");
-                        System.out.println(task);
-                        saveTasks();
-                    } else {
-                        System.out.println("eh this task is already unmark, choose again");
-                    }
-                }
-
-            } else {
-                System.out.println("Alamak this task number does not exist!");
-            }
-
-            System.out.println(barrier);
-        } catch (NumberFormatException e) {
-            System.out.println("Need to enter a valid task number leh");
-        }
-    }
-
-    private static void addTodo(String description, String barrier) {
-        ToDo newTodo = new ToDo(description);
-        tasks.add(newTodo);
-        saveTasks();
-        System.out.println(barrier);
-        System.out.println("Roger, added the task");
-        System.out.println("   " + newTodo);
-        System.out.println("Jialat, you have " + tasks.size() + " tasks in your list");
-        System.out.println(barrier);
-    }
-
-    private static void addDeadline(String input, String barrier) {
-        String[] parts = input.split("/by");
-        if (parts.length < 2) {
-            System.out.println(barrier);
-            System.out.println("Hey specify the deadline with /by");
-            System.out.println(barrier);
-        } else {
-            // had to add the trim function to these two parts
-            // as there was an issue with parsing cause of the white space
-            String description = parts[0].trim();
-            String by = parts[1].trim();
-            Deadline newDeadline = new Deadline(description, by);
-            tasks.add(newDeadline);
-            saveTasks();
-            System.out.println(barrier);
-            System.out.println("Roger, added the task");
-            System.out.println("   " + newDeadline);
-            System.out.println("Jialat, you have " + tasks.size() + " tasks in your list");
-            System.out.println(barrier);
-        }
-    }
-
-    private static void addEvent(String input, String barrier) {
-        String[] parts = input.split("/from");
-        if (parts.length < 2) {
-            System.out.println(barrier);
-            System.out.println("Hey specify the Event with /from and /to");
-            System.out.println(barrier);
-            return;
-        }
-        String[] timeline = parts[1].split("/to");
-        if (timeline.length < 2) {
-            System.out.println(barrier);
-            System.out.println("Hey specify the Event with /from and /to");
-            System.out.println(barrier);
-        } else {
-            // trim these variables as well to account for the white space from somewhere
-            String description = parts[0].trim();
-            String from = timeline[0].trim();
-            String to = timeline[1].trim();
-            Event newEvent = new Event(description, from, to);
-            tasks.add(newEvent);
-            saveTasks();
-            System.out.println(barrier);
-            System.out.println("Roger, added the task");
-            System.out.println("   " + newEvent);
-            System.out.println("Jialat, you have " + tasks.size() + " tasks in your list");
-            System.out.println(barrier);
-        }
-    }
-
-    private static void deleteTask(String taskNumber, String barrier) {
-        try {
-            int taskIndex = Integer.parseInt(taskNumber) - 1;
-
-            if (taskIndex < 0 || taskIndex >= tasks.size()) {
-                System.out.println(barrier);
-                System.out.println("The task number does not exist...");
-                System.out.println(barrier);
+            if (taskIndex < 0 || taskIndex >= tasks.getSize()) {
+                ui.showError("Alamak this task number does not exist");
                 return;
             }
 
-            Task taskToDelete = tasks.get(taskIndex);
-            tasks.remove(taskToDelete);
+            Task task = tasks.getTask(taskIndex);
 
-            System.out.println(barrier);
-            System.out.println("Orh, I removed the task");
-            System.out.println(taskToDelete);
-            System.out.println("Now you are left with " + tasks.size() + " tasks in your list");
-            System.out.println(barrier);
-        } catch (NumberFormatException e) {
-            System.out.println("Hais you need to enter a task number, not some gibberish");
-        }
-    }
-
-
-    private static void loadTasks() {
-        try {
-            File file = new File(DATA_FILE);
-            if (!file.exists()) {
-                return; // no file to load from
-            }
-
-            Scanner fileScanner = new Scanner(file);
-            // Adds task that were saved into local file into the tasks array to be listed
-            while(fileScanner.hasNextLine()) {
-                String nextLine = fileScanner.nextLine();
-                Task task = getTaskFromString(nextLine);
-                if (task != null) {
-                    tasks.add(task);
+            if (markDone) {
+                if (!task.getStatus()) {
+                    task.markAsDone();
+                    ui.showTaskMarked(task);
+                    storage.save(tasks.getAllTasks());
+                } else {
+                    ui.showError("eh you already finished this task la");
+                }
+            } else {
+                if (task.getStatus()) {
+                    task.uncheck();
+                    ui.showTaskUnmarked(task);
+                    storage.save(tasks.getAllTasks());
+                } else {
+                    ui.showError("eh this task is already unmark, choose again");
                 }
             }
-            fileScanner.close();
-        } catch (IOException e) {
-            System.out.println("Error loading tasks: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            ui.showError(e.getMessage());
         }
     }
-    // convert the line from text file into a task object
-    private static Task getTaskFromString(String line) {
-        // to use | need to have a \ but to have that need another \
-        String[] parts = line.split(" \\| ");
-        if (parts.length < 3) {
-            return null;
-        }
-        String type = parts[0];
-        boolean isDone = parts[1].equals("X");
-        String description = parts[2];
 
-        Task task = null;
-
-        switch (type) {
-        case "T":
-            task = new ToDo(description);
-            break;
-
-        case "D":
-            task = new Deadline(description, parts[3]);
-            break;
-        case "E":
-            task = new Event(description, parts[3], parts[4]);
-            break;
-        }
-        if (task != null && isDone) {
-            task.markAsDone();
-        }
-
-        return task;
-    }
-
-    private static void saveTasks() {
+    private void handleAddTodo(String arguments) {
         try {
-            FileWriter writer = new FileWriter(DATA_FILE);
+            String description = Parser.parseTodo(arguments);
+            ToDo newTodo = new ToDo(description);
+            tasks.addTask(newTodo);
+            storage.save(tasks.getAllTasks());
+            ui.showTaskAdded(newTodo, tasks.getSize());
+        } catch (IllegalArgumentException e) {
+            ui.showError(e.getMessage());
+        }
+    }
 
-            for (Task task : tasks) {
-                writer.write(taskToString(task) + "\n");
+    // dont have to check whether user input is correct as its done by the parser class
+    private void handleAddDeadline(String arguments) {
+        try {
+            String[] parts = Parser.parseDeadline(arguments);
+            Deadline newDeadline = new Deadline(parts[0], parts[1]);
+            tasks.addTask(newDeadline);
+            storage.save(tasks.getAllTasks());
+            ui.showTaskAdded(newDeadline, tasks.getSize());
+        } catch (IllegalArgumentException e) {
+            ui.showError(e.getMessage());
+        }
+    }
+
+    private void handleAddEvent(String arguments) {
+        try {
+            String[] parts = Parser.parseEvent(arguments);
+            Event newEvent = new Event(parts[0], parts[1], parts[2]);
+            tasks.addTask(newEvent);
+            storage.save(tasks.getAllTasks());
+            ui.showTaskAdded(newEvent, tasks.getSize());
+        } catch (IllegalArgumentException e) {
+            ui.showError(e.getMessage());
+        }
+    }
+
+    private void handleDeleteTask (String arguments) {
+        try {
+            int taskIndex = Parser.parseTaskNumber(arguments);
+
+            if (taskIndex < 0 || taskIndex >= tasks.getSize()) {
+                ui.showError("The task number does not exist...");
+                return;
             }
 
-            writer.close();
-        } catch (IOException e) {
-            System.out.println("Error saving tasks: " + e.getMessage());
+            Task deletedTask = tasks.deleteTask(taskIndex);
+            storage.save(tasks.getAllTasks());
+            ui.showTaskDeleted(deletedTask, tasks.getSize());
+        } catch (IllegalArgumentException e) {
+            ui.showError(e.getMessage());
         }
-    }
-
-    public static String taskToString(Task task) {
-        String type;
-        String details = "";
-        if (task instanceof ToDo) {
-            type = "T";
-        } else if (task instanceof Deadline) {
-            type = "D";
-            Deadline deadline = (Deadline) task;
-            details = " | " + deadline.getBy();
-        } else if (task instanceof  Event) {
-            type = "E";
-            Event event = (Event) task;
-            details = " | " + event.getFrom() + " | " + event.getTo();
-        } else {
-            type = "T"; // just fall back to todo
-        }
-
-        return type + " | " + task.getStatusIcon() + " | " + task.getDescription() + details;
     }
 }

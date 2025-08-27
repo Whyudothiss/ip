@@ -37,7 +37,7 @@ public class TaskList {
         return tasks.isEmpty();
     }
 
-    public ArrayList<Task> getAlLTasks() {
+    public ArrayList<Task> getAllTasks() {
         return tasks;
     }
 }

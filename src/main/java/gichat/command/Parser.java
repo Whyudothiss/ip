@@ -1,3 +1,4 @@
+package gichat.command;
 // Handles the parsing of user commands
 
 public class Parser {

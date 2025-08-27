@@ -1,7 +1,7 @@
-enum CommandType {
-    BYE, LIST, MARK, UNMARK, TODO, DEADLINE, EVENT, DELETE, UNKNOWN
-}
+package gichat.command;
+
 public class Command {
+
     private CommandType type;
     private String arguments;
 

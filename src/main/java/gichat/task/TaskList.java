@@ -1,3 +1,5 @@
+package gichat.task;
+
 import java.util.ArrayList;
 
 public class TaskList {
@@ -17,14 +19,14 @@ public class TaskList {
 
     public Task deleteTask(int index) {
         if (index < 0 || index >= tasks.size()) {
-            throw new ArrayIndexOutOfBoundsException("Task Index out of bounds");
+            throw new ArrayIndexOutOfBoundsException("gichat.task.Task Index out of bounds");
         }
         return tasks.remove(index);
     }
 
     public Task getTask(int index) {
         if (index < 0 || index >= tasks.size()) {
-            throw new ArrayIndexOutOfBoundsException("Task Index out of bounds");
+            throw new ArrayIndexOutOfBoundsException("gichat.task.Task Index out of bounds");
         }
         return tasks.get(index);
     }

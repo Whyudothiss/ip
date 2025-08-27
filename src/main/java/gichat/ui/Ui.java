@@ -1,3 +1,8 @@
+package gichat.ui;
+
+import gichat.task.Task;
+import gichat.task.TaskList;
+
 import java.util.Scanner;
 
 public class Ui {
@@ -11,7 +16,7 @@ public class Ui {
     // show welcome message
     public void showWelcome() {
         System.out.println(BORDER);
-        System.out.println("Hello I'm GiChat \nWhat you want");
+        System.out.println("Hello I'm gichat.GiChat \nWhat you want");
         System.out.println(BORDER);
     }
 

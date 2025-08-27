@@ -1,3 +1,5 @@
+package gichat.task;
+
 // New task class as per requested for level 3
 public class Task {
     protected String description;

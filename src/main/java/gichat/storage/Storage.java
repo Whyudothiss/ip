@@ -1,3 +1,10 @@
+package gichat.storage;
+
+import gichat.task.Deadline;
+import gichat.task.Event;
+import gichat.task.Task;
+import gichat.task.ToDo;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;

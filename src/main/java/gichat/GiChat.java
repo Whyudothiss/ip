@@ -1,3 +1,14 @@
+package gichat;
+import gichat.ui.Ui;
+import gichat.storage.Storage;
+import gichat.command.Parser;
+import gichat.command.Command;
+import gichat.task.TaskList;
+import gichat.task.Task;
+import gichat.task.Event;
+import gichat.task.ToDo;
+import gichat.task.Deadline;
+
 public class GiChat {
     private Storage storage;
     private TaskList tasks;

@@ -1,9 +1,11 @@
+package gichat.task;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-public class Event extends Task{
+public class Event extends Task {
     private String originalFrom;
     private String originalTo;
     private LocalDate fromDate;

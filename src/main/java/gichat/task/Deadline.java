@@ -31,7 +31,8 @@ public class Deadline extends Task {
             this.byDateTime = LocalDateTime.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
             this.byDate = this.byDateTime.toLocalDate();
         } catch (DateTimeParseException e1) {
-            // if format is wrong, will get thrown a dateTimeParseException, then try again using a different format
+            // if format is wrong, will get thrown a dateTimeParseException,
+            // then try again using a different format
             try {
                 this.byDate = LocalDate.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 this.byDateTime = null; // since user did not specifiy time

@@ -5,33 +5,52 @@ import gichat.task.TaskList;
 
 import java.util.Scanner;
 
+/**
+ * Handles instruction with the user
+ */
 public class Ui {
     private Scanner scanner;
     private static final String BORDER ="________________________________________________";
 
+    /**
+     * Construct the new Ui instance
+     */
     public Ui() {
         this.scanner = new Scanner(System.in);
     }
 
-    // show welcome message
+    /**
+     * Show welcome message to user
+     */
     public void showWelcome() {
         System.out.println(BORDER);
         System.out.println("Hello I'm gichat.GiChat \nWhat you want");
         System.out.println(BORDER);
     }
 
-    // show goodbye message
+    /**
+     * Show Goodbye message to user
+     */
     public void showGoodbye() {
         System.out.println(BORDER);
         System.out.println("Bye. Hope to see you again!");
         System.out.println(BORDER);
     }
 
-    // read user command
+    /**
+     * Reads a command from user
+     *
+     * @return The user's input command
+     */
     public String readCommand() {
         return scanner.nextLine();
     }
-    // show list of tasks to user
+
+    /**
+     * Shows the list of tasks to user
+     *
+     * @param taskList The task list to display
+     */
     public void showTasksList(TaskList taskList) {
         System.out.println(BORDER);
         if (taskList.isEmpty()) {
@@ -45,7 +64,12 @@ public class Ui {
         }
     }
 
-    // show task added confirmation
+    /**
+     * Show a task add confirmation
+     *
+     * @param task Task that was added
+     * @param taskCount The total number of tasks in the list
+     */
     public void showTaskAdded(Task task, int taskCount) {
         System.out.println(BORDER);
         System.out.println("Roger, added the task");
@@ -54,7 +78,12 @@ public class Ui {
         System.out.println(BORDER);
     }
 
-    // show task deleted confirmatino
+    /**
+     * Shows a task deletion confirmation
+     *
+     * @param task The task that is to be deleted
+     * @param taskCount The total number of tasks left in the list
+     */
     public void showTaskDeleted(Task task, int taskCount) {
         System.out.println(BORDER);
         System.out.println("Orh, I removed the task");
@@ -63,6 +92,11 @@ public class Ui {
         System.out.println(BORDER);
     }
 
+    /**
+     * Shows a task marked as done confirmation
+     *
+     * @param task The task that has been marked
+     */
     public void showTaskMarked(Task task) {
         System.out.println(BORDER);
         System.out.println("OKAY LA, being productive I see.");
@@ -71,6 +105,11 @@ public class Ui {
         System.out.println(BORDER);
     }
 
+    /**
+     * Shows a task unmarked confirmation
+     *
+     * @param task The task that has been unmarked
+     */
     public void showTaskUnmarked(Task task) {
         System.out.println(BORDER);
         System.out.println("oh... I have unchecked the task you lazy bum!");
@@ -78,12 +117,22 @@ public class Ui {
         System.out.println(BORDER);
     }
 
+    /**
+     * Shows an error message to the user
+     *
+     * @param message Message to be shown to user
+     */
     public void showError(String message) {
         System.out.println(BORDER);
         System.out.println(message);
         System.out.println(BORDER);
     }
 
+    /**
+     * Shows a message to the user
+     *
+     * @param message Message to be shown to user
+     */
     public void showMessage(String message) {
         System.out.println(BORDER);
         System.out.println(message);

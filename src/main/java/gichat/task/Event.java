@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+/**
+ * A type of task that has a from and to
+ */
 public class Event extends Task {
     private String originalFrom;
     private String originalTo;
@@ -13,6 +16,12 @@ public class Event extends Task {
     private LocalDateTime fromDateTime;
     private LocalDateTime toDateTime;
 
+    /**
+     * Constructs an instance of an Event with the description, from and to
+     * @param description The description of the event
+     * @param from The start of the event
+     * @param to The end of the event
+     */
     public Event(String description, String from, String to) {
         super(description);
         this.originalFrom = from;

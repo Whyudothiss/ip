@@ -9,11 +9,19 @@ import gichat.task.Event;
 import gichat.task.ToDo;
 import gichat.task.Deadline;
 
+/**
+ * Main class for the GiChat bot
+ */
 public class GiChat {
     private Storage storage;
     private TaskList tasks;
     private Ui ui;
 
+    /**
+     * Construct a new GiChat instance with the specified file path
+     *
+     * @param filePath The path to the data file
+     */
     public GiChat(String filePath) {
         this.ui = new Ui();
         this.storage = new Storage(filePath);
@@ -25,10 +33,18 @@ public class GiChat {
         }
     }
 
+    /**
+     *  Main method to start application
+     *
+     * @param args Command line argument
+     */
     public static void main(String[] args) {
         new GiChat("data/tasks.txt").run();
     }
 
+    /**
+     * Runs the main application loop
+     */
     public void run() {
         ui.showWelcome();
         boolean isExit = false;
@@ -45,6 +61,11 @@ public class GiChat {
         }
     }
 
+    /**
+     * Execute the given command
+     *
+     * @param command The command to execute
+     */
     public void executeCommand(Command command) {
         switch (command.getType()) {
         case BYE:
@@ -79,6 +100,11 @@ public class GiChat {
         }
     }
 
+    /**
+     * Handles marking and unmarking of tasks
+     * @param arguments Task Number
+     * @param markDone True to mark as done, false to mark as undone
+     */
     private void handleMarkTask(String arguments, boolean markDone) {
         try {
             int taskIndex = Parser.parseTaskNumber(arguments);
@@ -112,6 +138,10 @@ public class GiChat {
         }
     }
 
+    /**
+     * Handles adding a todo task
+     * @param arguments Todo description
+     */
     private void handleAddTodo(String arguments) {
         try {
             String description = Parser.parseTodo(arguments);
@@ -124,8 +154,12 @@ public class GiChat {
         }
     }
 
-    // dont have to check whether user input is correct as its done by the parser class
+    /**
+     * Handles adding a deadline task
+     * @param arguments deadline description
+     */
     private void handleAddDeadline(String arguments) {
+        // dont have to check whether user input is correct as its done by the parser class
         try {
             String[] parts = Parser.parseDeadline(arguments);
             Deadline newDeadline = new Deadline(parts[0], parts[1]);
@@ -137,6 +171,10 @@ public class GiChat {
         }
     }
 
+    /**
+     * Handles adding an Event task
+     * @param arguments Event description
+     */
     private void handleAddEvent(String arguments) {
         try {
             String[] parts = Parser.parseEvent(arguments);
@@ -149,6 +187,10 @@ public class GiChat {
         }
     }
 
+    /**
+     * Handles deleting a task
+     * @param arguments Task number to delete
+     */
     private void handleDeleteTask (String arguments) {
         try {
             int taskIndex = Parser.parseTaskNumber(arguments);

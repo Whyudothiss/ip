@@ -1,8 +1,16 @@
 package gichat.command;
-// Handles the parsing of user commands
 
+/**
+ * Handles the parsing of users command
+ */
 public class Parser {
 
+    /**
+     * Parses the Uses input and returns a Command object
+     *
+     * @param fullMessage The full command of string that the user input
+     * @return A command object representing the parsed command
+     */
     public static Command parse(String fullMessage) {
         String[] parts = fullMessage.split(" ", 2);
         String commandWord = parts[0];
@@ -30,7 +38,13 @@ public class Parser {
         }
     }
 
-    // parse a todo command and return task description
+    /**
+     * Parses a todo command and returns the task description
+     *
+     * @param arguments The arguments part of the todo command
+     * @return The task description
+     * @throws IllegalArgumentException If the argument is empty
+     */
     public static String parseTodo(String arguments) throws IllegalArgumentException {
         if (arguments.trim().isEmpty()) {
             throw new IllegalArgumentException("Eh can you give a valid todo task");
@@ -38,7 +52,13 @@ public class Parser {
         return arguments.trim();
     }
 
-    // parses a deadline command and return the description and the deadline
+    /**
+     * Parses a deadline command and return the description and the deadline
+     *
+     * @param arguments The arguments part of the deadline command
+     * @return An array containing the description and deadline
+     * @throws IllegalArgumentException If the format is incorrect
+     */
     public static String[] parseDeadline(String arguments) throws IllegalArgumentException {
         String[] parts = arguments.split("/by");
         if (parts.length < 2) {
@@ -47,7 +67,13 @@ public class Parser {
         return new String[] {parts[0].trim(), parts[1].trim()};
     }
 
-    // parses an event deadline command and return the description, start time and end time
+    /**
+     * Parses an event deadline command and return the description, start time and end time
+     *
+     * @param arguments The arguments part of the event command
+     * @return An array containing the description, from and to
+     * @throws IllegalArgumentException If the format is incorrect
+     */
     public static String[] parseEvent(String arguments) throws IllegalArgumentException {
         String[] parts = arguments.split("/from");
         if (parts.length < 2) {
@@ -60,6 +86,13 @@ public class Parser {
         return new String[] {parts[0].trim(), timeline[0].trim(), timeline[1].trim()};
     }
 
+    /**
+     * Parses a task number from the arguments
+     *
+     * @param arguments The arguments containing the task number
+     * @return The task index (0-baed)
+     * @throws IllegalArgumentException If the task number is invalid
+     */
     public static int parseTaskNumber(String arguments) throws IllegalArgumentException{
         if (arguments.trim().isEmpty()) {
             throw new IllegalArgumentException("You need to give me a task number");

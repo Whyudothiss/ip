@@ -5,11 +5,20 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
+/**
+ * A subclass of Task with a deadline
+ */
 public class Deadline extends Task {
     private String originalBy;
     private LocalDate byDate; // if user puts in date only
     private LocalDateTime byDateTime; // if user puts in both date and time
 
+    /**
+     * Constructs an instance of a deadline with a description and a deadline
+     *
+     * @param description The description of the task
+     * @param by The deadline of the task
+     */
     public Deadline(String description, String by) {
         super(description);
         this.originalBy = by;

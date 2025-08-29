@@ -93,6 +93,9 @@ public class GiChat {
         case DELETE:
             handleDeleteTask(command.getArguments());
             break;
+        case FIND:
+            handleFindTasks(command.getArguments());
+            break;
         case UNKNOWN:
             ui.showError("Erm... you need to give me a valid command...\n" +
                     "Can list, mark, unmark, todo, deadline, event, delete");
@@ -102,6 +105,7 @@ public class GiChat {
 
     /**
      * Handles marking and unmarking of tasks
+     *
      * @param arguments Task Number
      * @param markDone True to mark as done, false to mark as undone
      */
@@ -140,6 +144,7 @@ public class GiChat {
 
     /**
      * Handles adding a todo task
+     *
      * @param arguments Todo description
      */
     private void handleAddTodo(String arguments) {
@@ -156,6 +161,7 @@ public class GiChat {
 
     /**
      * Handles adding a deadline task
+     *
      * @param arguments deadline description
      */
     private void handleAddDeadline(String arguments) {
@@ -173,6 +179,7 @@ public class GiChat {
 
     /**
      * Handles adding an Event task
+     *
      * @param arguments Event description
      */
     private void handleAddEvent(String arguments) {
@@ -189,6 +196,7 @@ public class GiChat {
 
     /**
      * Handles deleting a task
+     *
      * @param arguments Task number to delete
      */
     private void handleDeleteTask (String arguments) {
@@ -203,6 +211,16 @@ public class GiChat {
             Task deletedTask = tasks.deleteTask(taskIndex);
             storage.save(tasks.getAllTasks());
             ui.showTaskDeleted(deletedTask, tasks.getSize());
+        } catch (IllegalArgumentException e) {
+            ui.showError(e.getMessage());
+        }
+    }
+
+    private void handleFindTasks(String arguments) {
+        try {
+            String keyword = Parser.parseFind(arguments);
+            TaskList foundTask = tasks.findTasks(keyword);
+            ui.showTaskFound(foundTask);
         } catch (IllegalArgumentException e) {
             ui.showError(e.getMessage());
         }

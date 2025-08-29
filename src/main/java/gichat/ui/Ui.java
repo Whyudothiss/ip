@@ -118,6 +118,22 @@ public class Ui {
     }
 
     /**
+     * Shows all the tasks found matching the keyword
+     *
+     * @param foundTasks A Task List of tasks that matches the keyword
+     */
+    public void showTaskFound(TaskList foundTasks) {
+        System.out.println(BORDER);
+        if (foundTasks.isEmpty()) {
+            System.out.println("Erm.. I can't find any tasks with that keyword leh");
+        } else {
+            System.out.println("These are the tasks I could find");
+            for (int i = 0; i < foundTasks.getSize(); i++) {
+                System.out.println((i+1) + "." + foundTasks.getTask(i));
+            }
+        }
+    }
+    /**
      * Shows an error message to the user
      *
      * @param message Message to be shown to user

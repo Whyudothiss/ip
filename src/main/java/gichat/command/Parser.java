@@ -33,6 +33,8 @@ public class Parser {
             return new Command(CommandType.EVENT, rest);
         case "delete":
             return new Command(CommandType.DELETE, rest);
+        case "find":
+            return new Command(CommandType.FIND,rest);
         default:
             return new Command(CommandType.UNKNOWN);
         }
@@ -105,4 +107,17 @@ public class Parser {
         }
     }
 
+    /**
+     * Parses a find command and returns the keyword to search for
+     *
+     * @param arguments The argument part of the find command
+     * @return The keyword to search for
+     * @throws IllegalArgumentException If the argument is wrong
+     */
+    public static String parseFind (String arguments) throws IllegalArgumentException {
+        if (arguments.trim().isEmpty()) {
+            throw new IllegalArgumentException("Eh what do you want to find. Can give me a keyword");
+        }
+        return arguments.trim();
+    }
 }

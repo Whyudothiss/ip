@@ -98,7 +98,7 @@ public class GiChat {
             break;
         case UNKNOWN:
             ui.showError("Erm... you need to give me a valid command...\n" +
-                    "Can list, mark, unmark, todo, deadline, event, delete");
+                    "Can list, mark, unmark, todo, deadline, event, delete, find");
             break;
         }
     }

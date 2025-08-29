@@ -10,7 +10,7 @@ import java.util.Scanner;
  */
 public class Ui {
     private Scanner scanner;
-    private static final String BORDER ="________________________________________________";
+    private static final String BORDER ="____________________________________________________________";
 
     /**
      * Construct the new Ui instance
@@ -132,6 +132,7 @@ public class Ui {
                 System.out.println((i+1) + "." + foundTasks.getTask(i));
             }
         }
+        System.out.println(BORDER);
     }
     /**
      * Shows an error message to the user

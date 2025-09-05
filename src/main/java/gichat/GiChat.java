@@ -15,7 +15,7 @@ import gichat.task.Deadline;
 public class GiChat {
     private Storage storage;
     private TaskList tasks;
-    private Ui ui;
+//    private Ui ui;
 
     /**
      * Construct a new GiChat instance with the specified file path
@@ -23,14 +23,29 @@ public class GiChat {
      * @param filePath The path to the data file
      */
     public GiChat(String filePath) {
-        this.ui = new Ui();
+//        this.ui = new Ui();
         this.storage = new Storage(filePath);
         try {
             this.tasks = new TaskList(storage.load());
         } catch (Exception e) {
-            ui.showError("Error loading tasks: " + e.getMessage());
+//            ui.showError("Error loading tasks: " + e.getMessage());
             tasks = new TaskList();
         }
+    }
+
+    /**
+     * Processors users input and returns a response string
+     * @param input User's input command
+     * @return Response string to display on GUI
+     */
+    public String getResponse(String input) {
+        try {
+            Command command = Parser.parse(input);
+            return executeCommand(command);
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+
     }
 
     /**
@@ -38,69 +53,75 @@ public class GiChat {
      *
      * @param args Command line argument
      */
-    public static void main(String[] args) {
-        new GiChat("data/tasks.txt").run();
-    }
+//    public static void main(String[] args) {
+//        new GiChat("data/tasks.txt").run();
+//    }
 
     /**
      * Runs the main application loop
      */
-    public void run() {
-        ui.showWelcome();
-        boolean isExit = false;
-
-        while (!isExit) {
-            try {
-                String fullcomand = ui.readCommand();
-                Command command = Parser.parse(fullcomand);
-                executeCommand(command);
-                isExit = command.isExit();
-            } catch (Exception e) {
-                ui.showError("Error: " + e.getMessage());
-            }
-        }
-    }
+//    public void run() {
+////        ui.showWelcome();
+//        boolean isExit = false;
+//
+//        while (!isExit) {
+//            try {
+//                String fullcomand = ui.readCommand();
+//                Command command = Parser.parse(fullcomand);
+//                executeCommand(command);
+//                isExit = command.isExit();
+//            } catch (Exception e) {
+//                ui.showError("Error: " + e.getMessage());
+//            }
+//        }
+//    }
 
     /**
-     * Execute the given command
+     * Execute the given command and return response string
      *
      * @param command The command to execute
+     * @return Response String for the GUI
      */
-    public void executeCommand(Command command) {
+    public String executeCommand(Command command) {
         switch (command.getType()) {
         case BYE:
             storage.save(tasks.getAllTasks());
-            ui.showGoodbye();
-            break;
+            return "Bye, don't come back soon";
         case LIST:
-            ui.showTasksList(tasks);
-            break;
+            return getTasksListString();
         case MARK:
             handleMarkTask(command.getArguments(), true);
-            break;
         case UNMARK:
             handleMarkTask(command.getArguments(), false);
-            break;
         case TODO:
             handleAddTodo(command.getArguments());
-            break;
         case DEADLINE:
             handleAddDeadline(command.getArguments());
-            break;
         case EVENT:
             handleAddEvent(command.getArguments());
-            break;
         case DELETE:
             handleDeleteTask(command.getArguments());
-            break;
         case FIND:
             handleFindTasks(command.getArguments());
-            break;
         case UNKNOWN:
-            ui.showError("Erm... you need to give me a valid command...\n" +
-                    "Can list, mark, unmark, todo, deadline, event, delete, find");
-            break;
+            return "Erm... you need to give me a valid command...\n" +
+                    "Can list, mark, unmark, todo, deadline, event, delete, find";
+        default:
+            return "Unknown command";
         }
+    }
+
+    private String getTasksListString() {
+        if (tasks.isEmpty()) {
+            return "Wah so free ah you, got no tasks to do";
+        } else {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < tasks.getSize(); i++) {
+                sb.append((i + 1)).append(". ").append(tasks.getTask(i)).append("\n");
+            }
+            return sb.toString().trim();
+        }
+
     }
 
     /**
@@ -108,14 +129,15 @@ public class GiChat {
      *
      * @param arguments Task Number
      * @param markDone True to mark as done, false to mark as undone
+     * @return GUI response after mark/unmark is called
+     *
      */
-    private void handleMarkTask(String arguments, boolean markDone) {
+    private String handleMarkTask(String arguments, boolean markDone) {
         try {
             int taskIndex = Parser.parseTaskNumber(arguments);
 
             if (taskIndex < 0 || taskIndex >= tasks.getSize()) {
-                ui.showError("Alamak this task number does not exist");
-                return;
+                return "Alamak this task number does not exist";
             }
 
             Task task = tasks.getTask(taskIndex);
@@ -123,22 +145,22 @@ public class GiChat {
             if (markDone) {
                 if (!task.getStatus()) {
                     task.markAsDone();
-                    ui.showTaskMarked(task);
                     storage.save(tasks.getAllTasks());
+                    return "OKAY LA, being productive I see.\nI helped marked it for you.\n" + task;
                 } else {
-                    ui.showError("eh you already finished this task la");
+                    return "eh you already finished this task la";
                 }
             } else {
                 if (task.getStatus()) {
                     task.uncheck();
-                    ui.showTaskUnmarked(task);
                     storage.save(tasks.getAllTasks());
+                    return "oh... I have unchecked the task for you lazy bum\n";
                 } else {
-                    ui.showError("eh this task is already unmark, choose again");
+                   return "eh this task is already unmark, choose again";
                 }
             }
         } catch (IllegalArgumentException e) {
-            ui.showError(e.getMessage());
+            return e.getMessage();
         }
     }
 
@@ -146,16 +168,18 @@ public class GiChat {
      * Handles adding a todo task
      *
      * @param arguments Todo description
+     * @return GUI response after adding a todo task
      */
-    private void handleAddTodo(String arguments) {
+    private String handleAddTodo(String arguments) {
         try {
             String description = Parser.parseTodo(arguments);
             ToDo newTodo = new ToDo(description);
             tasks.addTask(newTodo);
             storage.save(tasks.getAllTasks());
-            ui.showTaskAdded(newTodo, tasks.getSize());
+            return "Roger, added the task\n   " + newTodo +
+                    "\nJialat, you have " + tasks.getSize() + " tasks in your list";
         } catch (IllegalArgumentException e) {
-            ui.showError(e.getMessage());
+            return e.getMessage();
         }
     }
 
@@ -163,17 +187,19 @@ public class GiChat {
      * Handles adding a deadline task
      *
      * @param arguments deadline description
+     * @return GUI response after adding deadline task
      */
-    private void handleAddDeadline(String arguments) {
+    private String handleAddDeadline(String arguments) {
         // dont have to check whether user input is correct as its done by the parser class
         try {
             String[] parts = Parser.parseDeadline(arguments);
             Deadline newDeadline = new Deadline(parts[0], parts[1]);
             tasks.addTask(newDeadline);
             storage.save(tasks.getAllTasks());
-            ui.showTaskAdded(newDeadline, tasks.getSize());
+            return "Roger, added the task\n   " + newDeadline +
+                    "\nJialat, you have " + tasks.getSize() + " tasks in your list";
         } catch (IllegalArgumentException e) {
-            ui.showError(e.getMessage());
+            return e.getMessage();
         }
     }
 
@@ -181,16 +207,18 @@ public class GiChat {
      * Handles adding an Event task
      *
      * @param arguments Event description
+     * @return GUI response after adding an Event task
      */
-    private void handleAddEvent(String arguments) {
+    private String handleAddEvent(String arguments) {
         try {
             String[] parts = Parser.parseEvent(arguments);
             Event newEvent = new Event(parts[0], parts[1], parts[2]);
             tasks.addTask(newEvent);
             storage.save(tasks.getAllTasks());
-            ui.showTaskAdded(newEvent, tasks.getSize());
+            return "Roger, added the task\n   " + newEvent +
+                    "\nJialat, you have " + tasks.getSize() + " tasks in your list";
         } catch (IllegalArgumentException e) {
-            ui.showError(e.getMessage());
+           return e.getMessage();
         }
     }
 
@@ -198,31 +226,47 @@ public class GiChat {
      * Handles deleting a task
      *
      * @param arguments Task number to delete
+     * @return GUI response after deleting a task
      */
-    private void handleDeleteTask (String arguments) {
+    private String handleDeleteTask (String arguments) {
         try {
             int taskIndex = Parser.parseTaskNumber(arguments);
 
             if (taskIndex < 0 || taskIndex >= tasks.getSize()) {
-                ui.showError("The task number does not exist...");
-                return;
+                return "The task number does not exist...";
             }
 
             Task deletedTask = tasks.deleteTask(taskIndex);
             storage.save(tasks.getAllTasks());
-            ui.showTaskDeleted(deletedTask, tasks.getSize());
+            return "Orh, I removed the task\n" + deletedTask +
+                    "\nNow you are left with " + tasks.getSize() + " tasks in your list";
         } catch (IllegalArgumentException e) {
-            ui.showError(e.getMessage());
+            return e.getMessage();
         }
     }
 
-    private void handleFindTasks(String arguments) {
+    /**
+     * Handles finding tasks with relevant keywords
+     *
+     * @param arguments keyword to be found
+     * @return GUI response after calling find command
+     */
+    private String handleFindTasks(String arguments) {
         try {
             String keyword = Parser.parseFind(arguments);
-            TaskList foundTask = tasks.findTasks(keyword);
-            ui.showTaskFound(foundTask);
+            TaskList foundTasks = tasks.findTasks(keyword);
+
+            if (foundTasks.isEmpty()) {
+                return "Erm.. I can't find any tasks with that keyword leh";
+            } else {
+                StringBuilder sb = new StringBuilder("These are the tasks I could find\n");
+                for (int i = 0; i < foundTasks.getSize(); i++) {
+                    sb.append((i+1)).append(".").append(foundTasks.getTask(i)).append("\n");
+                }
+                return sb.toString().trim();
+            }
         } catch (IllegalArgumentException e) {
-            ui.showError(e.getMessage());
+            return e.getMessage();
         }
     }
 }

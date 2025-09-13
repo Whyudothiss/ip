@@ -41,6 +41,7 @@ public class TaskList {
      * @throws IndexOutOfBoundsException If the index is invalid
      */
     public Task deleteTask(int index) {
+        assert index >= 0 : "Index should be non-negative";
         if (index < 0 || index >= tasks.size()) {
             throw new IndexOutOfBoundsException("Task index out of bounds");
         }
@@ -55,6 +56,7 @@ public class TaskList {
      * @throws IndexOutOfBoundsException If the index is invalid
      */
     public Task getTask(int index) {
+        assert index >= 0 : "Index should be non-negative";
         if (index < 0 || index >= tasks.size()) {
             throw new IndexOutOfBoundsException("Task index out of bounds");
         }

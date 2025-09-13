@@ -143,21 +143,19 @@ public class GiChat {
             Task task = tasks.getTask(taskIndex);
 
             if (markDone) {
-                if (!task.getStatus()) {
-                    task.markAsDone();
-                    storage.save(tasks.getAllTasks());
-                    return "OKAY LA, being productive I see.\nI helped marked it for you.\n" + task;
-                } else {
+                if (task.getStatus()) {
                     return "eh you already finished this task la";
                 }
+                task.markAsDone();
+                storage.save(tasks.getAllTasks());
+                return "OKAY LA, being productive I see.\nI helped marked it for you.\n" + task;
             } else {
-                if (task.getStatus()) {
-                    task.uncheck();
-                    storage.save(tasks.getAllTasks());
-                    return "oh... I have unchecked the task for you lazy bum\n";
-                } else {
-                   return "eh this task is already unmark, choose again";
+                if (!task.getStatus()) {
+                    return "eh this task is already unmark, choose again";
                 }
+                task.uncheck();
+                storage.save(tasks.getAllTasks());
+                return "oh... I have unchecked the task for you lazy bum\n";
             }
         } catch (IllegalArgumentException e) {
             return e.getMessage();

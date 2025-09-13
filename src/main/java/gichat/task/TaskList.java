@@ -93,4 +93,18 @@ public class TaskList {
 
         return new TaskList(foundTasks);
     }
+
+    /**
+     * Replace a task at the specified index
+     *
+     * @param index The index of the task to be replaced
+     * @param newTask The new task to replace with
+     */
+    public void replaceTask(int index, Task newTask) {
+        assert index >= 0 : "Index should be non-negative";
+        if (index < 0 || index >= tasks.size()) {
+            throw new IndexOutOfBoundsException("The index our of bounds");
+        }
+        tasks.set(index, newTask);
+    }
 }

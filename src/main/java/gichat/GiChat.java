@@ -49,34 +49,6 @@ public class GiChat {
     }
 
     /**
-     *  Main method to start application
-     *
-     * @param args Command line argument
-     */
-//    public static void main(String[] args) {
-//        new GiChat("data/tasks.txt").run();
-//    }
-
-    /**
-     * Runs the main application loop
-     */
-//    public void run() {
-////        ui.showWelcome();
-//        boolean isExit = false;
-//
-//        while (!isExit) {
-//            try {
-//                String fullcomand = ui.readCommand();
-//                Command command = Parser.parse(fullcomand);
-//                executeCommand(command);
-//                isExit = command.isExit();
-//            } catch (Exception e) {
-//                ui.showError("Error: " + e.getMessage());
-//            }
-//        }
-//    }
-
-    /**
      * Execute the given command and return response string
      *
      * @param command The command to execute

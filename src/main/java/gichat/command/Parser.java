@@ -12,6 +12,7 @@ public class Parser {
      * @return A command object representing the parsed command
      */
     public static Command parse(String fullMessage) {
+        assert fullMessage != null : "Input message should not be null";
         String[] parts = fullMessage.split(" ", 2);
         String commandWord = parts[0];
         String rest = parts.length > 1 ? parts[1] : "";
@@ -48,6 +49,7 @@ public class Parser {
      * @throws IllegalArgumentException If the argument is empty
      */
     public static String parseTodo(String arguments) throws IllegalArgumentException {
+        assert arguments != null : "Arguments should not be null";
         if (arguments.trim().isEmpty()) {
             throw new IllegalArgumentException("Eh can you give a valid todo task");
         }

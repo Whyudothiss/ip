@@ -3,6 +3,7 @@ import gichat.ui.Ui;
 import gichat.storage.Storage;
 import gichat.command.Parser;
 import gichat.command.Command;
+import gichat.command.EditInfo;
 import gichat.task.TaskList;
 import gichat.task.Task;
 import gichat.task.Event;
@@ -64,22 +65,24 @@ public class GiChat {
         case LIST:
             return getTasksListString();
         case MARK:
-            handleMarkTask(command.getArguments(), true);
+            return handleMarkTask(command.getArguments(), true);
         case UNMARK:
-            handleMarkTask(command.getArguments(), false);
+            return handleMarkTask(command.getArguments(), false);
         case TODO:
-            handleAddTodo(command.getArguments());
+            return handleAddTodo(command.getArguments());
         case DEADLINE:
-            handleAddDeadline(command.getArguments());
+            return handleAddDeadline(command.getArguments());
         case EVENT:
-            handleAddEvent(command.getArguments());
+            return handleAddEvent(command.getArguments());
         case DELETE:
-            handleDeleteTask(command.getArguments());
+            return handleDeleteTask(command.getArguments());
         case FIND:
-            handleFindTasks(command.getArguments());
+            return handleFindTasks(command.getArguments());
+        case EDIT:
+            return handleEditTask(command.getArguments());
         case UNKNOWN:
             return "Erm... you need to give me a valid command...\n" +
-                    "Can list, mark, unmark, todo, deadline, event, delete, find";
+                    "Can list, mark, unmark, todo, deadline, event, delete, find, edit";
         default:
             return "Unknown command";
         }
@@ -239,6 +242,83 @@ public class GiChat {
             }
         } catch (IllegalArgumentException e) {
             return e.getMessage();
+        }
+    }
+
+    /**
+     * Handles editing a task
+     * @param arguments Edit Parameters
+     * @return Response after editing a task
+     */
+    private String handleEditTask(String arguments) {
+        try {
+            EditInfo editInfo = Parser.parseEdit(arguments);
+            int taskIndex = editInfo.getTaskIndex();
+
+            if (taskIndex < 0 || taskIndex >= tasks.getSize()) {
+                return "Alamak this task number does not exist";
+            }
+
+            Task task = tasks.getTask(taskIndex);
+            String originaltask = task.toString();
+
+            // need to edit based on the type of task
+            if (task instanceof  ToDo) {
+                if (editInfo.getDescription() == null) {
+                    return "Yo TODO task, you can only change description with /desc";
+                }
+//                ToDo todo = (ToDo) task;
+                boolean wasMarked = task.getStatus();
+                ToDo newTodo = new ToDo(editInfo.getDescription());
+                if (wasMarked) {
+                    newTodo.markAsDone();
+                }
+                tasks.replaceTask(taskIndex, newTodo);
+            } else if (task instanceof Deadline) {
+                Deadline deadline = (Deadline) task;
+                String newDesc = editInfo.getDescription() != null
+                        ? editInfo.getDescription()
+                        : deadline.getDescription();
+                String newBy = editInfo.getBy() != null
+                        ? editInfo.getBy()
+                        : deadline.getBy();
+
+                boolean wasMarked = task.getStatus();
+                Deadline newDeadline = new Deadline(newDesc, newBy);
+                if (wasMarked) {
+                    newDeadline.markAsDone();
+                }
+                tasks.replaceTask(taskIndex, newDeadline);
+            } else if (task instanceof Event) {
+                Event event = (Event) task;
+                String newDesc = editInfo.getBy() != null
+                        ? editInfo.getDescription()
+                        : event.getDescription();
+                String newFrom = editInfo.getFrom() != null
+                        ? editInfo.getFrom()
+                        : event.getFrom();
+                String newTo = editInfo.getTo() != null
+                        ? editInfo.getTo()
+                        : event.getTo();
+
+                boolean wasMarked = task.getStatus();
+                Event newEvent = new Event(newDesc, newFrom, newTo);
+                if (wasMarked) {
+                    newEvent.markAsDone();
+                }
+                tasks.replaceTask(taskIndex, newEvent);
+            }
+
+            storage.save(tasks.getAllTasks());
+            Task updatedTask = tasks.getTask(taskIndex);
+
+            return "Roger, I updated your task\n" +
+                    "Old: " + originaltask + "\n" +
+                    "New: " + updatedTask;
+        } catch (IllegalArgumentException e) {
+            return e.getMessage();
+        } catch (Exception e) {
+            return "Error editing task: " + e.getMessage();
         }
     }
 }

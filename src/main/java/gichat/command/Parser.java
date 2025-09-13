@@ -36,6 +36,8 @@ public class Parser {
             return new Command(CommandType.DELETE, rest);
         case "find":
             return new Command(CommandType.FIND,rest);
+        case "edit":
+            return new Command(CommandType.EDIT, rest);
         default:
             return new Command(CommandType.UNKNOWN);
         }
@@ -121,5 +123,91 @@ public class Parser {
             throw new IllegalArgumentException("Eh what do you want to find. Can give me a keyword");
         }
         return arguments.trim();
+    }
+
+    /**
+     * Parses an edit command and returns the task number and edit parameters
+     *
+     * @param arguments The arguments part of the edit command
+     * @return An EditInfo object containing the task index and edit parameters
+     * @throws IllegalArgumentException If format is incrreoct
+     */
+    public static EditInfo parseEdit(String arguments) throws IllegalArgumentException {
+        if (arguments.trim().isEmpty()) {
+            throw new IllegalArgumentException("Oi specify task number to edit");
+        }
+
+        String[] parts = arguments.split("", 2);
+        int taskIndex;
+
+        try {
+            taskIndex = Integer.parseInt(parts[0]) - 1;
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Oi first argument must be a valid task number");
+        }
+
+        if (parts.length < 2) {
+            throw new IllegalArgumentException("Need say what to edit.\nUse /desc, /by, /from, /to");
+        }
+
+        String editParams = parts[1];
+        EditInfo editInfo = new EditInfo(taskIndex);
+
+        if (editParams.contains("/desc")) {
+            String desc = extractParameter(editParams, "/desc");
+            if (!desc.isEmpty()) {
+                editInfo.setDescription(desc);
+            }
+        }
+
+        if (editParams.contains("/by")) {
+            String by = extractParameter(editParams, "by");
+            if (!by.isEmpty()) {
+                editInfo.setBy(by);
+            }
+        }
+
+        if (editParams.contains("/from")) {
+            String from = extractParameter(editParams, "/from");
+            if (!from.isEmpty()) {
+                editInfo.setFrom(from);
+            }
+        }
+
+        if (editParams.contains("/to")) {
+            String to = extractParameter(editParams, "/to");
+            if (!to.isEmpty()) {
+                editInfo.setTo(to);
+            }
+        }
+
+        if (!editInfo.hasAnyEdits()) {
+            throw new IllegalArgumentException("Need say what to edit.\nUse /desc, /by, /from, /to");
+        }
+        return editInfo;
+    }
+
+    private static String extractParameter(String editParams, String param) {
+        // startIndex is where /desc start or the other param
+        int startIndex = editParams.indexOf(param);
+        if (startIndex == -1) {
+            return "";
+        }
+        // moves pass the parameter name /desc or /from etc
+        startIndex += param.length();
+        int endIndex = editParams.length();
+
+        String[] nextParams = {"/desc", "/by", "/from", "to"};
+        for (String nextParam : nextParams) {
+            if (!nextParam.equals(param)) {
+                // this looks for the next parameter: "/by" all those
+                int nextIndex = editParams.indexOf(nextParam, startIndex);
+                if (nextIndex != -1 && nextIndex < endIndex) {
+                    endIndex = nextIndex;
+                }
+            }
+        }
+        // Extracting the substring between two parameters
+        return editParams.substring(startIndex, endIndex).trim();
     }
 }

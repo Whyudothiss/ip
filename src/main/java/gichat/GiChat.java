@@ -49,34 +49,6 @@ public class GiChat {
     }
 
     /**
-     *  Main method to start application
-     *
-     * @param args Command line argument
-     */
-//    public static void main(String[] args) {
-//        new GiChat("data/tasks.txt").run();
-//    }
-
-    /**
-     * Runs the main application loop
-     */
-//    public void run() {
-////        ui.showWelcome();
-//        boolean isExit = false;
-//
-//        while (!isExit) {
-//            try {
-//                String fullcomand = ui.readCommand();
-//                Command command = Parser.parse(fullcomand);
-//                executeCommand(command);
-//                isExit = command.isExit();
-//            } catch (Exception e) {
-//                ui.showError("Error: " + e.getMessage());
-//            }
-//        }
-//    }
-
-    /**
      * Execute the given command and return response string
      *
      * @param command The command to execute
@@ -145,21 +117,19 @@ public class GiChat {
             Task task = tasks.getTask(taskIndex);
 
             if (markDone) {
-                if (!task.getStatus()) {
-                    task.markAsDone();
-                    storage.save(tasks.getAllTasks());
-                    return "OKAY LA, being productive I see.\nI helped marked it for you.\n" + task;
-                } else {
+                if (task.getStatus()) {
                     return "eh you already finished this task la";
                 }
+                task.markAsDone();
+                storage.save(tasks.getAllTasks());
+                return "OKAY LA, being productive I see.\nI helped marked it for you.\n" + task;
             } else {
-                if (task.getStatus()) {
-                    task.uncheck();
-                    storage.save(tasks.getAllTasks());
-                    return "oh... I have unchecked the task for you lazy bum\n";
-                } else {
-                   return "eh this task is already unmark, choose again";
+                if (!task.getStatus()) {
+                    return "eh this task is already unmark, choose again";
                 }
+                task.uncheck();
+                storage.save(tasks.getAllTasks());
+                return "oh... I have unchecked the task for you lazy bum\n";
             }
         } catch (IllegalArgumentException e) {
             return e.getMessage();

@@ -12,6 +12,10 @@ public class Deadline extends Task {
     private String originalBy;
     private LocalDate byDate; // if user puts in date only
     private LocalDateTime byDateTime; // if user puts in both date and time
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+    private static final DateTimeFormatter DATE_FORMATTER =  DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter DISPLAY_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma");
+    private static final DateTimeFormatter DISPLAY_DATE_FORMATTER =  DateTimeFormatter.ofPattern("MMM dd yyyy");
 
     /**
      * Constructs an instance of a deadline with a description and a deadline
@@ -28,13 +32,13 @@ public class Deadline extends Task {
     private void parseDateTime(String dateTimeString) {
         try {
             // try to convert string to yyyy-MM-dd HHmm format first
-            this.byDateTime = LocalDateTime.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
+            this.byDateTime = LocalDateTime.parse(dateTimeString, DATE_TIME_FORMATTER);
             this.byDate = this.byDateTime.toLocalDate();
         } catch (DateTimeParseException e1) {
             // if format is wrong, will get thrown a dateTimeParseException,
             // then try again using a different format
             try {
-                this.byDate = LocalDate.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                this.byDate = LocalDate.parse(dateTimeString, DATE_FORMATTER);
                 this.byDateTime = null; // since user did not specifiy time
             } catch (DateTimeParseException e2) {
                 // If both times fail, meaning user did not give proper time or date, keep as string
@@ -61,12 +65,10 @@ public class Deadline extends Task {
         String dateString;
         if (this.byDateTime != null) {
             // Format as MMM dd yyyy, h:mm a
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma");
-            dateString = byDateTime.format(formatter);
+            dateString = byDateTime.format(DISPLAY_DATE_TIME_FORMATTER);
         } else if (this.byDate != null) {
             // Format as MMM dd yyyy
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy");
-            dateString = byDate.format(formatter);
+            dateString = byDate.format(DISPLAY_DATE_FORMATTER);
         } else {
             // just fall back to string
             dateString = originalBy;

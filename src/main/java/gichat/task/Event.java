@@ -15,6 +15,10 @@ public class Event extends Task {
     private LocalDate toDate;
     private LocalDateTime fromDateTime;
     private LocalDateTime toDateTime;
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+    private static final DateTimeFormatter DATE_FORMATTER =  DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter DISPLAY_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma");
+    private static final DateTimeFormatter DISPLAY_DATE_FORMATTER =  DateTimeFormatter.ofPattern("MMM dd yyyy");
 
     /**
      * Constructs an instance of an Event with the description, from and to
@@ -32,11 +36,11 @@ public class Event extends Task {
 
     private void parseFromDateTime(String dateTimeString) {
         try {
-            this.fromDateTime = LocalDateTime.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
+            this.fromDateTime = LocalDateTime.parse(dateTimeString, DATE_TIME_FORMATTER);
             this.fromDate = this.fromDateTime.toLocalDate();
         } catch (DateTimeParseException e1) {
             try {
-                this.fromDate = LocalDate.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                this.fromDate = LocalDate.parse(dateTimeString, DATE_FORMATTER);
                 this.fromDateTime = null;
             } catch (DateTimeParseException e2) {
                 this.fromDateTime = null;
@@ -47,11 +51,11 @@ public class Event extends Task {
 
     private void parseToDateTime(String dateTimeString) {
         try {
-            this.toDateTime = LocalDateTime.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm"));
+            this.toDateTime = LocalDateTime.parse(dateTimeString, DATE_TIME_FORMATTER);
             this.toDate = this.toDateTime.toLocalDate();
         } catch (DateTimeParseException e1) {
             try {
-                this.toDate = LocalDate.parse(dateTimeString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                this.toDate = LocalDate.parse(dateTimeString, DATE_FORMATTER);
                 this.toDateTime = null;
             } catch (DateTimeParseException e2) {
                 this.toDate = null;
@@ -89,21 +93,17 @@ public class Event extends Task {
     public String toString() {
         String fromString, toString;
         if (fromDateTime != null) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma");
-            fromString = fromDateTime.format(formatter);
+            fromString = fromDateTime.format(DISPLAY_DATE_TIME_FORMATTER);
         } else if (fromDate != null) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy");
-            fromString = fromDate.format(formatter);
+            fromString = fromDate.format(DISPLAY_DATE_FORMATTER);
         } else {
             fromString = originalFrom;
         }
 
         if (toDateTime != null) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma");
-            toString = toDateTime.format(formatter);
+            toString = toDateTime.format(DISPLAY_DATE_TIME_FORMATTER);
         } else if (toDate != null) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy");
-            toString = toDate.format(formatter);
+            toString = toDate.format(DISPLAY_DATE_FORMATTER);
         } else {
             toString = originalTo;
         }

@@ -55,6 +55,8 @@ public class GiChat {
      * @return Response String for the GUI
      */
     public String executeCommand(Command command) {
+        assert command != null : "Command should not be null";
+
         switch (command.getType()) {
         case BYE:
             storage.save(tasks.getAllTasks());

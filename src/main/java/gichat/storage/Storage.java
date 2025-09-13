@@ -63,6 +63,7 @@ public class Storage {
      * @param tasks An Array list of tasks to be saved
      */
     public void save (ArrayList<Task> tasks) {
+        assert tasks != null : "Tasks list should not be null";
         try {
             FileWriter writer = new FileWriter(filePath);
             for (Task task : tasks) {

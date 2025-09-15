@@ -1,0 +1,68 @@
+/* Circular image styling */
+.circular-image {
+    -fx-shape: "circle";
+    -fx-background-radius: 50%;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 2);
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 2;
+    -fx-background-color: #fafafa;
+    -fx-fit-width: 50px;
+    -fx-fit-height: 50px;
+    -fx-max-width: 50px;
+    -fx-max-height: 50px;
+}
+
+/* Speech bubble styling */
+.speech-bubble {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 20;
+    -fx-padding: 12 16 12 16;
+    -fx-border-radius: 20;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-font-size: 14px;
+    -fx-transition: all 0.3s ease;
+    -fx-max-width: 320px;
+    -fx-wrap-text: true;
+}
+
+.speech-bubble:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 12, 0.3, 0, 4);
+}
+
+/* User speech bubble (right side) */
+.user-bubble {
+    -fx-background-color: #dcf8c6;
+    -fx-border-color: #b3e0a6;
+}
+
+/* Duke speech bubble (left side) */
+.duke-bubble {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+}
+
+/* Container spacing */
+.dialog-container {
+    -fx-spacing: 10;
+    -fx-padding: 10;
+}
+
+/* Dark mode toggle */
+.root.dark-mode .speech-bubble {
+    -fx-background-color: #222;
+    -fx-text-fill: #eee;
+    -fx-border-color: #444;
+}
+
+.root.dark-mode .user-bubble {
+    -fx-background-color: #3a5f3d;
+    -fx-border-color: #4e7a57;
+}
+
+.root.dark-mode .duke-bubble {
+    -fx-background-color: #222;
+    -fx-border-color: #444;
+}

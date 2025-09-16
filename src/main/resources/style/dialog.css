@@ -1,7 +1,12 @@
+/* Root Background styling*/
+.root {
+    -fx-background-color: #f5f5f5;
+}
+
+
 /* Circular image styling */
 .circular-image {
-    -fx-shape: "circle";
-    -fx-background-radius: 50%;
+    -fx-background-radius: 25;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 2);
     -fx-border-color: #e0e0e0;
     -fx-border-width: 2;
@@ -10,6 +15,8 @@
     -fx-fit-height: 50px;
     -fx-max-width: 50px;
     -fx-max-height: 50px;
+    -fx-min-width: 50px;
+    -fx-min-height: 50px;
 }
 
 /* Speech bubble styling */
@@ -24,8 +31,6 @@
     -fx-font-family: "Segoe UI", "Arial", sans-serif;
     -fx-font-size: 14px;
     -fx-transition: all 0.3s ease;
-    -fx-max-width: 320px;
-    -fx-wrap-text: true;
 }
 
 .speech-bubble:hover {
@@ -44,10 +49,37 @@
     -fx-border-color: #e0e0e0;
 }
 
+/* Dialog label styling */
+.dialog-label {
+    -fx-max-width: 250px;
+    -fx-pref-width: -1;
+    -fx-wrap-text: true;
+}
+
 /* Container spacing */
 .dialog-container {
     -fx-spacing: 10;
     -fx-padding: 10;
+    -fx-background-color: #f5f5f5;
+}
+
+/* ScrollPane background */
+.scroll-pane {
+    -fx-background-color: #f5f5f5;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: #f5f5f5;
+}
+
+/* VBox container background */
+.vbox {
+    -fx-background-color: #f5f5f5;
+}
+
+/* Dark mode toggle */
+.root.dark-mode {
+    -fx-background-color: #2c2c2c;
 }
 
 /* Dark mode toggle */
@@ -65,4 +97,11 @@
 .root.dark-mode .duke-bubble {
     -fx-background-color: #222;
     -fx-border-color: #444;
+}
+
+.root.dark-mode .dialog-container,
+.root.dark-mode .scroll-pane,
+.root.dark-mode .scroll-pane .viewport,
+.root.dark-mode .vbox {
+    -fx-background-color: #2c2c2c;
 }

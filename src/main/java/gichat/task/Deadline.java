@@ -1,0 +1,79 @@
+package gichat.task;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+/**
+ * A subclass of Task with a deadline
+ */
+public class Deadline extends Task {
+    private String originalBy;
+    private LocalDate byDate; // if user puts in date only
+    private LocalDateTime byDateTime; // if user puts in both date and time
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HHmm");
+    private static final DateTimeFormatter DATE_FORMATTER =  DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter DISPLAY_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMM dd yyyy, h:mma");
+    private static final DateTimeFormatter DISPLAY_DATE_FORMATTER =  DateTimeFormatter.ofPattern("MMM dd yyyy");
+
+    /**
+     * Constructs an instance of a deadline with a description and a deadline
+     *
+     * @param description The description of the task
+     * @param by The deadline of the task
+     */
+    public Deadline(String description, String by) {
+        super(description);
+        this.originalBy = by;
+        parseDateTime(this.originalBy);
+    }
+
+    private void parseDateTime(String dateTimeString) {
+        try {
+            // try to convert string to yyyy-MM-dd HHmm format first
+            this.byDateTime = LocalDateTime.parse(dateTimeString, DATE_TIME_FORMATTER);
+            this.byDate = this.byDateTime.toLocalDate();
+        } catch (DateTimeParseException e1) {
+            // if format is wrong, will get thrown a dateTimeParseException,
+            // then try again using a different format
+            try {
+                this.byDate = LocalDate.parse(dateTimeString, DATE_FORMATTER);
+                this.byDateTime = null; // since user did not specifiy time
+            } catch (DateTimeParseException e2) {
+                // If both times fail, meaning user did not give proper time or date, keep as string
+                this.byDateTime = null;
+                this.byDate = null;
+            }
+        }
+    }
+
+    public String getBy() {
+        return this.originalBy;
+    }
+
+    public LocalDate getByDate() {
+        return this.byDate;
+    }
+
+    public LocalDateTime getByDateTime() {
+        return this.byDateTime;
+    }
+
+    @Override
+    public String toString() {
+        String dateString;
+        if (this.byDateTime != null) {
+            // Format as MMM dd yyyy, h:mm a
+            dateString = byDateTime.format(DISPLAY_DATE_TIME_FORMATTER);
+        } else if (this.byDate != null) {
+            // Format as MMM dd yyyy
+            dateString = byDate.format(DISPLAY_DATE_FORMATTER);
+        } else {
+            // just fall back to string
+            dateString = originalBy;
+        }
+        return "[D][" + this.getStatusIcon() +  "] " + this.description + " (by: " + dateString + ")";
+    }
+
+}

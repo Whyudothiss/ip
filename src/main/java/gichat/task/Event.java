@@ -32,6 +32,34 @@ public class Event extends Task {
         this.originalTo = to;
         parseFromDateTime(this.originalFrom);
         parseToDateTime(this.originalTo);
+        validateDateTimeOrder();
+    }
+
+    private void validateDateTimeOrder() {
+        LocalDateTime start = normaliseToDateTime(this.fromDate, this.fromDateTime);
+        LocalDateTime end = normaliseToDateTime(this.toDate, this.toDateTime);
+
+        // skip validation step
+        if (start == null || end == null) {
+            return;
+        }
+
+        if (!start.isBefore(end)) {
+            String message = (this.fromDateTime != null || this.toDateTime != null)
+                            ? "Alamak, Start time cannot be after or same as the end time la"
+                            : "Wah you a time traveller? Start date cannot be after end date";
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    private LocalDateTime normaliseToDateTime(LocalDate date, LocalDateTime dateTime) {
+        if (dateTime != null) {
+            return dateTime;
+        }
+        if (date != null) {
+            return date.atStartOfDay();
+        }
+        return null;
     }
 
     private void parseFromDateTime(String dateTimeString) {

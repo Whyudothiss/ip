@@ -4,3 +4,4 @@ E |   | rest | 2025-10-10 | 2025-10-12
 T | X | i want to sleep
 E |   | have a good night sleep | today | tommorrow
 T |   | get food
+T |   | go home

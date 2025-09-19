@@ -47,10 +47,23 @@ application {
 }
 
 shadowJar {
-    archiveBaseName = "duke"
+    archiveBaseName = "GiChat"
     archiveClassifier = null
 }
 
 run{
     standardInput = System.in
+}
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from('src/main/resources') {
+        include '**/*.fxml'
+        include '**/*.css'
+        include '**/*.jpg'
+        include '**/*.jpeg'
+        include '**/*.png'
+        include '**/*.gif'
+        include '**/*.JPG' // Add this for your Gigi.JPG
+    }
 }

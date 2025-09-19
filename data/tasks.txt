@@ -1,1 +1,7 @@
-T |   | go buyyy fooodod
+T |   | finish reading book
+E |   |  | 2025-02-01 | 2026-10-10
+D |   | finish 2103T tp | Sunday
+T |   | go to gym
+T |   | read book
+D |   | submit assignment | 2025-12-25
+E |   | Team Project Meeting | 2025-05-05 1400 | 2025-05-05 1800

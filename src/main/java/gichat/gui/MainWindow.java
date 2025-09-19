@@ -7,6 +7,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.application.Platform;
+
 /**
  * Controller for the main GUI.
  */
@@ -48,5 +50,18 @@ public class MainWindow extends AnchorPane {
                 DialogBox.getDukeDialog(response, dukeImage)
         );
         userInput.clear();
+
+        // Check if bye command, and close the window
+        if (input.trim().equalsIgnoreCase("bye")) {
+            // add a new thread delay to let user see goodbye statement
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1500); // wait 1.5 seconds
+                    Platform.runLater(() -> Platform.exit());
+                } catch (InterruptedException e) {
+                    Platform.runLater(() -> Platform.exit());
+                }
+            }).start();
+        }
     }
 }

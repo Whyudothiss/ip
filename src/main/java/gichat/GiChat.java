@@ -16,7 +16,6 @@ import gichat.task.Deadline;
 public class GiChat {
     private Storage storage;
     private TaskList tasks;
-//    private Ui ui;
 
     /**
      * Construct a new GiChat instance with the specified file path
@@ -24,12 +23,12 @@ public class GiChat {
      * @param filePath The path to the data file
      */
     public GiChat(String filePath) {
-//        this.ui = new Ui();
         this.storage = new Storage(filePath);
         try {
             this.tasks = new TaskList(storage.load());
         } catch (Exception e) {
-//            ui.showError("Error loading tasks: " + e.getMessage());
+            System.out.println("Could not load existing tasks, starting with empty task list. Error: "
+                    + e.getMessage());
             tasks = new TaskList();
         }
     }

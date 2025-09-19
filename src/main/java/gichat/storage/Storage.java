@@ -37,9 +37,14 @@ public class Storage {
         try {
             File file = new File(filePath);
             if (!file.exists()) {
-                file.getParentFile().mkdirs();
+                File parentDir = file.getParentFile();
+                if (parentDir != null && !parentDir.exists()) {
+                    boolean created = parentDir.mkdirs();
+                    if (!created) {
+                        System.out.println("Could not create directory: " + parentDir.getPath());
+                    }
+                }
                 return tasks; // return empty list
-
             }
 
             Scanner fileScanner = new Scanner(file);

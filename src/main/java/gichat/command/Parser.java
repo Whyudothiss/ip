@@ -137,7 +137,7 @@ public class Parser {
             throw new IllegalArgumentException("Oi specify task number to edit");
         }
 
-        String[] parts = arguments.split("", 2);
+        String[] parts = arguments.split(" ", 2);
         int taskIndex;
 
         try {
